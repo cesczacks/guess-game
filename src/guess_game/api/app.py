@@ -1,16 +1,26 @@
 import uuid
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 from langgraph.types import Command
 
 from guess_game.core.graph import game
-from guess_game.core.state import State, Turn
+from guess_game.core.state import State, Turn, MAX_QUESTIONS
 
 app = FastAPI()
 
 
 class TurnRequest(BaseModel):
-    question: str
+    question: str = Field(min_length=1, max_length=100)
+
+    @field_validator("question")
+    @classmethod
+    def validate_question(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("Question must not be blank")
+        if value.casefold() == "/giveup":
+            raise ValueError("Use POST /game/{game_id}/give_up to give up")
+        return value
 
 
 @app.get("/health")
@@ -44,6 +54,7 @@ def turns(game_id: str, turn: TurnRequest):
         "status": result.get("status"),
         "answer": _format_answer(last_turn),
         "questions_asked": result.get("question_asked"),
+        "max_questions": MAX_QUESTIONS,
         **(
             {"secret_figure": result.get("secret_figure")}
             if result.get("status") in ("won", "lost", "gave_up")
@@ -62,6 +73,8 @@ def summary(game_id: str):
     return {
         "game_id": game_id,
         "status": state.get("status"),
+        "questions_asked": state.get("question_asked"),
+        "max_questions": MAX_QUESTIONS,
         **(
             {"secret_figure": state.get("secret_figure")}
             if state.get("status") in ("won", "lost", "gave_up")

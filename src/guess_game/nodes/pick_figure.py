@@ -33,7 +33,7 @@ DYNASTIES = {
     "近现代": 1,
 }
 
-CANDIDATE_COUNT = 10
+CANDIDATE_COUNT = 50
 
 
 def pick_figure(state: State) -> State:
@@ -50,7 +50,6 @@ def pick_figure(state: State) -> State:
 
     result = chain.invoke({"messages": [HumanMessage(content=prompt)]})
     names = list({f.name.strip() for f in result.figures if f.name.strip()})
-    print(names)
     name = random.choice(names)
 
     return {"secret_figure": name, "status": "playing", "question_asked": 0}
