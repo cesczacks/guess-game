@@ -49,7 +49,12 @@ def pick_figure(state: State) -> State:
     )
 
     result = chain.invoke({"messages": [HumanMessage(content=prompt)]})
-    names = list({f.name.strip() for f in result.figures if f.name.strip()})
-    name = random.choice(names)
+    figures = list({f.name.strip(): f for f in result.figures if f.name.strip()}.values())
+    figure = random.choice(figures)
 
-    return {"secret_figure": name, "status": "playing", "question_asked": 0}
+    return {
+        "secret_figure": figure.name.strip(),
+        "secret_profile": f"{figure.dynasty} · {figure.role}",
+        "status": "playing",
+        "question_asked": 0,
+    }

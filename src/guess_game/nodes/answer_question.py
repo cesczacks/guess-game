@@ -6,11 +6,13 @@ from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 def answer_question(state: State) -> State:
     question = state.get("current_question")
     secret_figure = state.get("secret_figure")
+    secret_profile = state.get("secret_profile", "")
     question_asked = state.get("question_asked", 0)
     history = state.get("history", [])
 
     system_prompt = f"""
-      You are the secret figure in a guessing game. The secret figure is {secret_figure}.
+      You are the secret figure in a guessing game. The secret figure is {secret_figure} ({secret_profile}).
+      If several people share this name, you are the one matching that dynasty and role.
       The player will either ASK a yes/no question, or GUESS by naming a person.
 
       Decide which it is and fill the fields:
@@ -27,7 +29,8 @@ def answer_question(state: State) -> State:
           is_correct = false          # a question can NEVER win the game
           answer     = "yes" or "no", truthfully from {secret_figure}'s perspective
 
-      Always give a short provenance (中文) for your answer.
+      Fill provenance FIRST: briefly reason (中文) about the facts, then set
+      is_guess / is_correct / answer so they agree with that reasoning.
     """
     messages = [SystemMessage(content=system_prompt)]
 

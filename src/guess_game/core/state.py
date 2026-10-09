@@ -8,6 +8,10 @@ MAX_QUESTIONS = 10
 class Answer(BaseModel):
     """What the LLM returns for one player input."""
 
+    # Declared first so the model reasons before committing to an answer.
+    provenance: str = Field(
+        description="Short reasoning/evidence (中文), written before deciding the other fields"
+    )
     is_guess: bool = Field(
         description="True if the player named a figure instead of asking a yes/no question"
     )
@@ -17,7 +21,6 @@ class Answer(BaseModel):
     answer: Literal["yes", "no", "n/a"] = Field(
         description="Yes/no reply to the question; 'n/a' when the input was a guess"
     )
-    provenance: str = Field(description="Short reason/evidence for the answer")
 
 
 class Turn(Answer):
@@ -26,6 +29,7 @@ class Turn(Answer):
 
 class State(TypedDict):
     secret_figure: str
+    secret_profile: str
     history: Annotated[list[Turn], add]
     current_question: str
     question_asked: int
