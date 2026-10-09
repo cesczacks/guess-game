@@ -62,12 +62,19 @@ def summary(game_id: str):
     return {
         "game_id": game_id,
         "status": state.get("status"),
+        **(
+            {"secret_figure": state.get("secret_figure")}
+            if state.get("status") in ("won", "lost", "gave_up")
+            else {}
+        ),
         "history": [
             {
                 "question": turn.question,
                 "answer": _format_answer(turn),
                 **(
-                    {"provenance": turn.provenance}
+                    {
+                        "provenance": turn.provenance,
+                    }
                     if state.get("status") in ("won", "lost", "gave_up")
                     else {}
                 ),

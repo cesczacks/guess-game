@@ -22,7 +22,7 @@ DYNASTIES = {
     "先秦": 1,
     "秦": 2,
     "东汉/西汉": 3,
-    "三国": 50,
+    "三国": 1,
     "晋": 2,
     "隋": 1,
     "唐": 3,
@@ -50,6 +50,7 @@ def pick_figure(state: State) -> State:
 
     result = chain.invoke({"messages": [HumanMessage(content=prompt)]})
     names = list({f.name.strip() for f in result.figures if f.name.strip()})
+    print(names)
     name = random.choice(names)
 
     return {"secret_figure": name, "status": "playing", "question_asked": 0}
