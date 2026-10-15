@@ -8,9 +8,13 @@ MAX_QUESTIONS = 10
 class Answer(BaseModel):
     """What the LLM returns for one player input."""
 
-    # Declared first so the model reasons before committing to an answer.
+    # Declared first so the model identifies supporting facts before answering.
     provenance: str = Field(
-        description="Short reasoning/evidence (中文), written before deciding the other fields"
+        description=(
+            "Only brief factual evidence (中文) supporting the answer or guess match, "
+            "No reasoning steps, question classification, "
+            "answer conclusion, or win/loss judgment."
+        )
     )
     is_guess: bool = Field(
         description="True if the player named a figure instead of asking a yes/no question"

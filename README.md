@@ -61,7 +61,7 @@ aws sso login --profile dev004
 uv run guess-game
 ```
 
-Type a yes/no question (e.g. `是皇帝吗`, `是唐朝的吗`) or a guess (e.g. `是李白吗`). Type `/giveup` to reveal the answer. When the game ends you get a review of every turn, including the model's reasoning (`依据`).
+Type a yes/no question (e.g. `是皇帝吗`, `是唐朝的吗`) or a guess (e.g. `是李白吗`). Type `/giveup` to reveal the answer. When the game ends you get a review of every turn, including the factual evidence for each answer (`依据`).
 
 ## Run the API
 
@@ -80,7 +80,7 @@ The app entrypoint is `guess_game.api.app:app` (set under `[tool.fastapi]` in `p
 | `GET` | `/health` | Health check |
 | `POST` | `/create` | Start a new game. Returns `{"game_id": ...}` |
 | `POST` | `/game/{game_id}/turns` | Ask a question or make a guess. Body: `{"question": "..."}` (1–100 chars) |
-| `GET` | `/game/{game_id}/summary` | Game status and history. Reasoning and the secret figure are only shown once the game has ended |
+| `GET` | `/game/{game_id}/summary` | Game status and history. Factual evidence and the secret figure are only shown once the game has ended |
 | `POST` | `/game/{game_id}/give_up` | Give up and reveal the secret figure |
 
 `answer` in responses is a boolean: for a question it means yes/no, and for a guess it means correct/incorrect. Calling `turns` or `give_up` on a finished game returns `409`, and an unknown `game_id` returns `404`.

@@ -29,8 +29,11 @@ def answer_question(state: State) -> State:
           is_correct = false          # a question can NEVER win the game
           answer     = "yes" or "no", truthfully from {secret_figure}'s perspective
 
-      Fill provenance FIRST: briefly reason (中文) about the facts, then set
-      is_guess / is_correct / answer so they agree with that reasoning.
+      Fill provenance FIRST with only the brief factual evidence (中文) needed
+      to support the reply. For a guess, state the secret and guessed names.
+      Do NOT include your reasoning steps, classify the player's input, state
+      the yes/no conclusion, or explain whether the player wins. Set
+      is_guess / is_correct / answer separately based on the evidence.
     """
     messages = [SystemMessage(content=system_prompt)]
 
