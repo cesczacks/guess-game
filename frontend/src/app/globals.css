@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f6f1e7;
+  --ink: #2b2522;
+  --seal: #b4302a;
+  --jade: #2f7a5f;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-seal: var(--seal);
+  --color-jade: var(--jade);
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+  --font-sans:
+    var(--font-geist-sans), "PingFang SC", "Noto Sans SC", "Microsoft YaHei",
+    sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
