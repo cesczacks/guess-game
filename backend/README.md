@@ -1,10 +1,10 @@
-# guess-game
+# guess-game backend
 
-A "20 questions"-style guessing game about Chinese historical figures, built with [LangGraph](https://github.com/langchain-ai/langgraph) and Claude on AWS Bedrock.
+The game engine and HTTP API for guess-game, built with [LangGraph](https://github.com/langchain-ai/langgraph) and Claude on AWS Bedrock. See the [root README](../README.md) for running it together with the web frontend.
 
 The game secretly picks a famous Chinese historical figure. You ask yes/no questions (or make a guess) in Chinese, and the LLM answers in character. You have up to **10** questions to name the figure.
 
-Playable from a terminal (CLI) or over HTTP (FastAPI).
+Playable from a terminal (CLI) or over HTTP (FastAPI). The [web frontend](../frontend) uses the HTTP API.
 
 ## How it works
 
@@ -73,7 +73,7 @@ uv run fastapi dev      # dev server with reload
 uv run fastapi run
 ```
 
-The app entrypoint is `guess_game.api.app:app` (set under `[tool.fastapi]` in `pyproject.toml`). Interactive docs are at `http://localhost:8000/docs`.
+The app entrypoint is `guess_game.api.app:app` (set under `[tool.fastapi]` in `pyproject.toml`). Interactive docs are at `http://localhost:8000/docs`. From the repo root, `make backend` does the same as `uv run fastapi dev`.
 
 ### Endpoints
 

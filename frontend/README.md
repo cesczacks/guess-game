@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# guess-game frontend
 
-## Getting Started
+Next.js web client for the guess-game. It talks to the FastAPI backend in [`../backend`](../backend).
 
-First, run the development server:
+## Features
+
+- Start a game, then ask yes/no questions or guess a name (up to 10 tries)
+- Each turn shows a 是/否 badge; progress dots track questions used
+- When the game ends, the secret figure is revealed with the evidence (依据) for every answer
+- The current game is saved in `localStorage`, so a page reload resumes it
+
+## Getting started
+
+The backend must be running on port 8000 (see the [root README](../README.md)).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+bun dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Or run both apps from the repo root with `make dev`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script | What it does |
+| --- | --- |
+| `bun dev` | Dev server with hot reload |
+| `bun run build` / `bun start` | Production build / serve |
+| `bun run lint` | Biome lint + format check |
+| `bun run format` | Biome format (writes files) |
 
-## Learn More
+Formatting is enforced by Biome (2-space indent, double quotes). Set Biome as your editor's formatter to avoid lint failures.
 
-To learn more about Next.js, take a look at the following resources:
+## Backend connection
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`next.config.ts` rewrites `/api/*` to the backend:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Env var | Default | Purpose |
+| --- | --- | --- |
+| `BACKEND_URL` | `http://localhost:8000` | Where `/api/*` requests are proxied |
 
-## Deploy on Vercel
+The proxy timeout is raised to 120s because LLM-backed endpoints can be slow.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project layout
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/
+│   ├── layout.tsx            # Root layout, fonts, metadata
+│   ├── page.tsx              # Renders <GuessGame />
+│   └── globals.css           # Tailwind + theme colours (paper, ink, seal, jade)
+├── components/game/
+│   ├── index.tsx             # GuessGame: switches start / game screen
+│   ├── use-game.ts           # Game state + actions (start, ask, giveUp, reset)
+│   ├── start-screen.tsx      # Title, rules, start button
+│   ├── game-screen.tsx       # Header, progress, result banner, turn list
+│   ├── question-form.tsx     # Question input + give up
+│   └── turn-card.tsx         # One question/answer row
+└── lib/
+    └── api.ts                # Typed client for the backend API
+```
+
+This project uses a recent Next.js with breaking changes; see [AGENTS.md](AGENTS.md) before changing framework code.
